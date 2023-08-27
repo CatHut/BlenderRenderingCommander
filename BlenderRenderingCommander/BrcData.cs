@@ -16,6 +16,16 @@ namespace BlenderRenderingCommander
         public int StartFrame { get; set; }
         public int EndFrame { get; set; }
 
+        public RenderingCommand() 
+        {
+            BlenerExePath = "";
+            BlenerFilePath = "";
+            Scene = "";
+            StartFrame = 0;
+            EndFrame = 0;
+        }
+
+
         /// <summary>
         /// 比較対象と内容を比較する
         /// </summary>
@@ -75,14 +85,16 @@ namespace BlenderRenderingCommander
 
     public class BrcData
     {
-        public string ExePath { get; set; }
 
-        public RenderingCommand CurrentCommand;
+        public RenderingCommand CurrentCommand { get; set; }
 
-        public Queue<RenderingCommand> CommandHistory { get; set; }
+        public SerializableQueue<RenderingCommand> CommandHistory { get; set; }
 
-
-
+        public BrcData()
+        {
+            CommandHistory = new SerializableQueue<RenderingCommand>();
+            CurrentCommand = new RenderingCommand();
+        }
 
 
     }
