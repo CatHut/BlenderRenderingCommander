@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             button_Rendering = new Button();
             textBoxEx_Exe = new CatHut.TextBoxEx();
             label1 = new Label();
@@ -52,6 +53,7 @@
             label_StatusLabel = new Label();
             label_Status = new Label();
             button_Clear = new Button();
+            timer_ValueChanged = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)numericUpDown_Start).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_End).BeginInit();
             SuspendLayout();
@@ -73,6 +75,7 @@
             textBoxEx_Exe.Name = "textBoxEx_Exe";
             textBoxEx_Exe.Size = new Size(438, 23);
             textBoxEx_Exe.TabIndex = 1;
+            textBoxEx_Exe.TextChanged += textBoxEx_Exe_TextChanged;
             // 
             // label1
             // 
@@ -90,6 +93,7 @@
             textBoxEx_File.Name = "textBoxEx_File";
             textBoxEx_File.Size = new Size(438, 23);
             textBoxEx_File.TabIndex = 3;
+            textBoxEx_File.TextChanged += textBoxEx_File_TextChanged;
             // 
             // listView_History
             // 
@@ -143,6 +147,7 @@
             numericUpDown_Start.Name = "numericUpDown_Start";
             numericUpDown_Start.Size = new Size(96, 23);
             numericUpDown_Start.TabIndex = 7;
+            numericUpDown_Start.ValueChanged += numericUpDown_Start_ValueChanged;
             // 
             // numericUpDown_End
             // 
@@ -151,6 +156,7 @@
             numericUpDown_End.Name = "numericUpDown_End";
             numericUpDown_End.Size = new Size(96, 23);
             numericUpDown_End.TabIndex = 8;
+            numericUpDown_End.ValueChanged += numericUpDown_End_ValueChanged;
             // 
             // textBoxEx_Scene
             // 
@@ -159,6 +165,7 @@
             textBoxEx_Scene.Name = "textBoxEx_Scene";
             textBoxEx_Scene.Size = new Size(152, 23);
             textBoxEx_Scene.TabIndex = 9;
+            textBoxEx_Scene.TextChanged += textBoxEx_Scene_TextChanged;
             // 
             // label3
             // 
@@ -196,6 +203,7 @@
             textBox_Log.Multiline = true;
             textBox_Log.Name = "textBox_Log";
             textBox_Log.ReadOnly = true;
+            textBox_Log.ScrollBars = ScrollBars.Both;
             textBox_Log.Size = new Size(590, 171);
             textBox_Log.TabIndex = 13;
             // 
@@ -246,6 +254,10 @@
             button_Clear.Text = "クリア";
             button_Clear.UseVisualStyleBackColor = true;
             button_Clear.Click += button_Clear_Click;
+            // 
+            // timer_ValueChanged
+            // 
+            timer_ValueChanged.Tick += timer_ValueChanged_Tick;
             // 
             // Form1
             // 
@@ -305,5 +317,6 @@
         private Label label_StatusLabel;
         private Label label_Status;
         private Button button_Clear;
+        private System.Windows.Forms.Timer timer_ValueChanged;
     }
 }

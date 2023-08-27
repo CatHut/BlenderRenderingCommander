@@ -1,5 +1,6 @@
 using CatHut;
 using System.Diagnostics;
+using System.Text;
 
 namespace BlenderRenderingCommander
 {
@@ -59,6 +60,8 @@ namespace BlenderRenderingCommander
                 AS.Data.CurrentCommand.EndFrame = (int)numericUpDown_End.Value;
                 AS.Data.CurrentCommand.StartFrame = (int)numericUpDown_Start.Value;
                 AS.Data.CurrentCommand.Scene = textBoxEx_Scene.Text;
+
+                AS.Save();
             }
             EnableEvent = true;
         }
@@ -89,11 +92,14 @@ namespace BlenderRenderingCommander
 
             // コマンドライン引数にtreeコマンドを指定
             p.StartInfo.Arguments = "/c chcp 65001 && " + CreateCommandText(AS.Data.CurrentCommand);
+            //p.StartInfo.Arguments = "/c " + CreateCommandText(AS.Data.CurrentCommand);
 
             // 出力を読み取れるようにする
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.RedirectStandardInput = false;
+            //p.StartInfo.StandardInputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
+            p.StartInfo.StandardOutputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
 
             // ウィンドウを表示しないようにする
             p.StartInfo.CreateNoWindow = true;
@@ -137,6 +143,7 @@ namespace BlenderRenderingCommander
             ret += exePath + " ";
             ret += optionB + " ";
             ret += filePath + " ";
+            ret += optionS + " ";
             ret += scene + " ";
             ret += optionA + " ";
             ret += optionVerbose;
@@ -149,6 +156,9 @@ namespace BlenderRenderingCommander
                 ret += optionEnd + " ";
                 ret += endFrame + " ";
             }
+
+            textBox_Log.AppendText("Created Command" + Environment.NewLine);
+            textBox_Log.AppendText(ret + Environment.NewLine);
 
             return ret;
 
@@ -192,6 +202,51 @@ namespace BlenderRenderingCommander
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             AS.Save();
+        }
+
+        private void timer_ValueChanged_Tick(object sender, EventArgs e)
+        {
+            timer_ValueChanged.Stop();
+            if (EnableEvent == false) { return; }
+            EnableEvent = false;
+            {
+                ReadUiValues();
+            }
+            EnableEvent = true;
+        }
+
+        private void textBoxEx_Exe_TextChanged(object sender, EventArgs e)
+        {
+            timer_ValueChanged.Stop();
+            timer_ValueChanged.Start();
+        }
+
+        private void textBoxEx_File_TextChanged(object sender, EventArgs e)
+        {
+            timer_ValueChanged.Stop();
+            timer_ValueChanged.Start();
+
+        }
+
+        private void textBoxEx_Scene_TextChanged(object sender, EventArgs e)
+        {
+            timer_ValueChanged.Stop();
+            timer_ValueChanged.Start();
+
+        }
+
+        private void numericUpDown_Start_ValueChanged(object sender, EventArgs e)
+        {
+            timer_ValueChanged.Stop();
+            timer_ValueChanged.Start();
+
+        }
+
+        private void numericUpDown_End_ValueChanged(object sender, EventArgs e)
+        {
+            timer_ValueChanged.Stop();
+            timer_ValueChanged.Start();
+
         }
     }
 }
