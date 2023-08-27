@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\AppSetting.cs" Link="CatHutLib\AppSetting.cs" />
+    <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\Common\CatHutCommon.cs" Link="CatHutLib\CatHutCommon.cs" />
+    <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\Common\SerializableColor.cs" Link="CatHutLib\SerializableColor.cs" />
+    <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\Common\SerializableDictionary.cs" Link="CatHutLib\SerializableDictionary.cs" />
+    <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\Common\SerializableKeyValuePair.cs" Link="CatHutLib\SerializableKeyValuePair.cs" />
+    <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\Common\SerializableSortedDictionary.cs" Link="CatHutLib\SerializableSortedDictionary.cs" />
+    <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\ExControls\TextBoxEx.cs" Link="CatHutLib\TextBoxEx.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CatHutLib\" />
+  </ItemGroup>
+
+</Project>
