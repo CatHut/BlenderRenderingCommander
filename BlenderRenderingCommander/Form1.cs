@@ -7,7 +7,8 @@ namespace BlenderRenderingCommander
     public partial class Form1 : Form
     {
         AppSetting<BrcData> AS;
-        bool EnableEvent = true;
+        bool EventEnable = true;
+        bool InterruptionFlag = false;
 
 
         public Form1()
@@ -30,22 +31,16 @@ namespace BlenderRenderingCommander
 
         private async void button_Rendering_Click(object sender, EventArgs e)
         {
-            if (EnableEvent == false) { return; }
-            EnableEvent = false;
+            ReadUiValues();
+
+            if (false == CheckSettings())
             {
-                ReadUiValues();
-
-                if (false == CheckSettings())
-                {
-                    EnableEvent = true;
-                    return;
-                }
-
-                // 非同期メソッドを呼び出す
-                await RunCommandAsync();
-
+                return;
             }
-            EnableEvent = true;
+
+            // 非同期メソッドを呼び出す
+            await RunCommandAsync();
+
         }
 
         /// <summary>
@@ -53,7 +48,7 @@ namespace BlenderRenderingCommander
         /// </summary>
         private void ReadUiValues()
         {
-            EnableEvent = false;
+            EventEnable = false;
             {
                 AS.Data.CurrentCommand.BlenerExePath = textBoxEx_Exe.Text;
                 AS.Data.CurrentCommand.BlenerFilePath = textBoxEx_File.Text;
@@ -63,7 +58,7 @@ namespace BlenderRenderingCommander
 
                 AS.Save();
             }
-            EnableEvent = true;
+            EventEnable = true;
         }
 
         /// <summary>
@@ -71,7 +66,7 @@ namespace BlenderRenderingCommander
         /// </summary>
         private void WriteUiValues()
         {
-            EnableEvent = false;
+            EventEnable = false;
 
             textBoxEx_Exe.Text = AS.Data.CurrentCommand.BlenerExePath;
             textBoxEx_File.Text = AS.Data.CurrentCommand.BlenerFilePath;
@@ -79,11 +74,12 @@ namespace BlenderRenderingCommander
             numericUpDown_Start.Value = AS.Data.CurrentCommand.StartFrame;
             textBoxEx_Scene.Text = AS.Data.CurrentCommand.Scene;
 
-            EnableEvent = true;
+            EventEnable = true;
         }
 
         private async Task RunCommandAsync()
         {
+
             // Processオブジェクトを作成
             Process p = new Process();
 
@@ -97,12 +93,17 @@ namespace BlenderRenderingCommander
             // 出力を読み取れるようにする
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.RedirectStandardInput = false;
+            p.StartInfo.RedirectStandardInput = true;
             //p.StartInfo.StandardInputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
             p.StartInfo.StandardOutputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
 
             // ウィンドウを表示しないようにする
             p.StartInfo.CreateNoWindow = true;
+
+            //// プロセス終了時のイベントハンドラーを登録
+            //var tcs = new TaskCompletionSource<bool>();
+            //p.EnableRaisingEvents = true;
+            //p.Exited += (sender, e) => tcs.SetResult(true);
 
             // プロセスを起動
             p.Start();
@@ -115,10 +116,23 @@ namespace BlenderRenderingCommander
 
                 // テキストボックスに追加する
                 textBox_Log.AppendText(line + Environment.NewLine);
+
+
+                if (InterruptionFlag == true)
+                {
+                    // Ctrl+Cのシグナルを送る
+                    p.StandardInput.Write("\x3");
+                    InterruptionFlag = false;
+                }
+
             }
 
-            // プロセスを終了
-            p.WaitForExit();
+            // プロセス終了時のイベントを非同期的に待機
+            //await tcs.Task;
+
+            await p.WaitForExitAsync();
+
+            // プロセスを閉じる
             p.Close();
         }
 
@@ -133,21 +147,18 @@ namespace BlenderRenderingCommander
             string filePath = "\"" + rc.BlenerFilePath + "\""; // ファイルパスの前後にダブルクォーテーションを追加
             string optionS = "-S";
             string scene = "\"" + rc.Scene + "\""; // ファイルパスの前後にダブルクォーテーションを追加
-            string optionA = "-a";
-            string optionVerbose = "--verbose 0";
             string optionStart = "-s";
             string startFrame = rc.StartFrame.ToString();
             string optionEnd = "-e";
             string endFrame = rc.EndFrame.ToString();
+            string optionVerbose = "--verbose 0";
+            string optionA = "-a";
 
             ret += exePath + " ";
             ret += optionB + " ";
             ret += filePath + " ";
             ret += optionS + " ";
             ret += scene + " ";
-            ret += optionA + " ";
-            ret += optionVerbose;
-
             if (rc.StartFrame != 0 && rc.EndFrame != 0)
             {
                 ret += " ";
@@ -156,6 +167,8 @@ namespace BlenderRenderingCommander
                 ret += optionEnd + " ";
                 ret += endFrame + " ";
             }
+            ret += optionVerbose + " ";
+            ret += optionA;
 
             textBox_Log.AppendText("Created Command" + Environment.NewLine);
             textBox_Log.AppendText(ret + Environment.NewLine);
@@ -166,14 +179,14 @@ namespace BlenderRenderingCommander
 
         private void button_Clear_Click(object sender, EventArgs e)
         {
-            if (EnableEvent == false) { return; }
-            EnableEvent = false;
+            if (EventEnable == false) { return; }
+            EventEnable = false;
             {
                 AS.Data.CurrentCommand.EndFrame = 0;
                 AS.Data.CurrentCommand.StartFrame = 0;
                 WriteUiValues();
             }
-            EnableEvent = true;
+            EventEnable = true;
         }
 
         private bool CheckSettings()
@@ -207,12 +220,12 @@ namespace BlenderRenderingCommander
         private void timer_ValueChanged_Tick(object sender, EventArgs e)
         {
             timer_ValueChanged.Stop();
-            if (EnableEvent == false) { return; }
-            EnableEvent = false;
+            if (EventEnable == false) { return; }
+            EventEnable = false;
             {
                 ReadUiValues();
             }
-            EnableEvent = true;
+            EventEnable = true;
         }
 
         private void textBoxEx_Exe_TextChanged(object sender, EventArgs e)
@@ -247,6 +260,11 @@ namespace BlenderRenderingCommander
             timer_ValueChanged.Stop();
             timer_ValueChanged.Start();
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            InterruptionFlag = true;
         }
     }
 }

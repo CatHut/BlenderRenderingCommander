@@ -54,6 +54,7 @@
             label_Status = new Label();
             button_Clear = new Button();
             timer_ValueChanged = new System.Windows.Forms.Timer(components);
+            button1 = new Button();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_Start).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_End).BeginInit();
             SuspendLayout();
@@ -259,11 +260,22 @@
             // 
             timer_ValueChanged.Tick += timer_ValueChanged_Tick;
             // 
+            // button1
+            // 
+            button1.Location = new Point(641, 82);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 19;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 704);
+            Controls.Add(button1);
             Controls.Add(button_Clear);
             Controls.Add(label_Status);
             Controls.Add(label_StatusLabel);
@@ -318,5 +330,6 @@
         private Label label_Status;
         private Button button_Clear;
         private System.Windows.Forms.Timer timer_ValueChanged;
+        private Button button1;
     }
 }
