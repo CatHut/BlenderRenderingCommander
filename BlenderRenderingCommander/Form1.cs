@@ -10,6 +10,12 @@ namespace BlenderRenderingCommander
         bool EventEnable = true;
         bool InterruptionFlag = false;
 
+        // キャンセル トークン ソースを作成
+        CancellationTokenSource Cts;
+
+        // キャンセル トークン を取得
+        CancellationToken Ct;
+
 
         public Form1()
         {
@@ -25,6 +31,12 @@ namespace BlenderRenderingCommander
             }
             AS.Load();
 
+            // キャンセル トークン ソースを作成
+            Cts = new CancellationTokenSource();
+
+            // キャンセル トークン を取得
+            Ct = Cts.Token;
+
             WriteUiValues();
         }
 
@@ -39,7 +51,7 @@ namespace BlenderRenderingCommander
             }
 
             // 非同期メソッドを呼び出す
-            await RunCommandAsync();
+            await Task.Run(() => RunCommandAsync());
 
         }
 
@@ -83,18 +95,19 @@ namespace BlenderRenderingCommander
             // Processオブジェクトを作成
             Process p = new Process();
 
-            // コマンドプロンプトのパスを指定
-            p.StartInfo.FileName = Environment.GetEnvironmentVariable("ComSpec");
 
-            // コマンドライン引数にtreeコマンドを指定
-            p.StartInfo.Arguments = "/c chcp 65001 && " + CreateCommandText(AS.Data.CurrentCommand);
-            //p.StartInfo.Arguments = "/c " + CreateCommandText(AS.Data.CurrentCommand);
+            // コマンドプロンプトのパスを指定
+            string exePath = "\"" + AS.Data.CurrentCommand.BlenerExePath + "\""; // ファイルパスの前後にダブルクォーテーションを追加
+            p.StartInfo.FileName = exePath;
+
+            // コマンドライン引数を指定
+            p.StartInfo.Arguments = CreateCommandText(AS.Data.CurrentCommand);
 
             // 出力を読み取れるようにする
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.RedirectStandardInput = true;
-            //p.StartInfo.StandardInputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
+            p.StartInfo.StandardInputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
             p.StartInfo.StandardOutputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
 
             // ウィンドウを表示しないようにする
@@ -105,23 +118,36 @@ namespace BlenderRenderingCommander
             //p.EnableRaisingEvents = true;
             //p.Exited += (sender, e) => tcs.SetResult(true);
 
+            Debug.WriteLine("A");
+
             // プロセスを起動
             p.Start();
+
+            Debug.WriteLine("B");
 
             // 出力を読み取る
             while (!p.StandardOutput.EndOfStream)
             {
+                Debug.WriteLine("C");
+
                 // 一行ずつ読み取る
                 string line = await p.StandardOutput.ReadLineAsync();
 
                 // テキストボックスに追加する
-                textBox_Log.AppendText(line + Environment.NewLine);
+                textBox_Log.Invoke((Action)(() => textBox_Log.AppendText(line + Environment.NewLine)));
 
+
+                // キャンセルが要求されたかどうかチェックする
+                //Ct.ThrowIfCancellationRequested();
 
                 if (InterruptionFlag == true)
                 {
+                    Debug.WriteLine("G");
                     // Ctrl+Cのシグナルを送る
-                    p.StandardInput.Write("\x3");
+                    p.StandardInput.WriteLine("\x3");
+                    //p.Close();
+                    Debug.WriteLine("H");
+                    //p.Kill();
                     InterruptionFlag = false;
                 }
 
@@ -130,10 +156,17 @@ namespace BlenderRenderingCommander
             // プロセス終了時のイベントを非同期的に待機
             //await tcs.Task;
 
+            Debug.WriteLine("D");
+
             await p.WaitForExitAsync();
+
+            Debug.WriteLine("E");
 
             // プロセスを閉じる
             p.Close();
+
+            Debug.WriteLine("F");
+
         }
 
         private string CreateCommandText(RenderingCommand rc)
@@ -154,7 +187,7 @@ namespace BlenderRenderingCommander
             string optionVerbose = "--verbose 0";
             string optionA = "-a";
 
-            ret += exePath + " ";
+            //ret += exePath + " ";
             ret += optionB + " ";
             ret += filePath + " ";
             ret += optionS + " ";
@@ -170,8 +203,8 @@ namespace BlenderRenderingCommander
             ret += optionVerbose + " ";
             ret += optionA;
 
-            textBox_Log.AppendText("Created Command" + Environment.NewLine);
-            textBox_Log.AppendText(ret + Environment.NewLine);
+            textBox_Log.Invoke((Action)(() => textBox_Log.AppendText("Created Command" + Environment.NewLine)));
+            textBox_Log.Invoke((Action)(() => textBox_Log.AppendText(ret + Environment.NewLine)));
 
             return ret;
 
@@ -265,6 +298,9 @@ namespace BlenderRenderingCommander
         private void button1_Click(object sender, EventArgs e)
         {
             InterruptionFlag = true;
+
+            // キャンセルの要求を送る
+            //Cts.Cancel();
         }
     }
 }
