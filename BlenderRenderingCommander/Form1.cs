@@ -10,12 +10,7 @@ namespace BlenderRenderingCommander
         bool EventEnable = true;
         bool InterruptionFlag = false;
         bool IsProcessing = false;
-
-        // キャンセル トークン ソースを作成
-        CancellationTokenSource Cts;
-
-        // キャンセル トークン を取得
-        CancellationToken Ct;
+        int MAX_HISTORY_NUM = 10;
 
 
         public Form1()
@@ -32,13 +27,46 @@ namespace BlenderRenderingCommander
             }
             AS.Load();
 
-            // キャンセル トークン ソースを作成
-            Cts = new CancellationTokenSource();
-
-            // キャンセル トークン を取得
-            Ct = Cts.Token;
-
             WriteUiValues();
+        }
+
+        private void DisableUi()
+        {
+            textBoxEx_Exe.Enabled = false;
+            textBoxEx_File.Enabled = false;
+            numericUpDown_Start.Enabled = false;
+            numericUpDown_End.Enabled = false;
+            textBoxEx_Scene.Enabled = false;
+            button_Clear.Enabled = false;
+            listView_History.Enabled = false;
+        }
+
+        private void EnableUi()
+        {
+            textBoxEx_Exe.Enabled = true;
+            textBoxEx_File.Enabled = true;
+            numericUpDown_Start.Enabled = true;
+            numericUpDown_End.Enabled = true;
+            textBoxEx_Scene.Enabled = true;
+            button_Clear.Enabled = true;
+            listView_History.Enabled = true;
+        }
+
+        private void UpdateCommandHistory(RenderingCommand rc)
+        {
+            if (AS.Data.CommandHistory.Contains(rc))
+            {
+                AS.Data.CommandHistory.Remove(rc);
+            }
+
+            var temp = CatHutCommon.DeepClone(rc);
+            AS.Data.CommandHistory.Enqueue(temp);
+
+            if (AS.Data.CommandHistory.Count > MAX_HISTORY_NUM)
+            {
+                AS.Data.CommandHistory.Dequeue();
+            }
+
         }
 
 
@@ -48,8 +76,10 @@ namespace BlenderRenderingCommander
             {
                 IsProcessing = true;
                 button_Rendering.Text = "レンダリング中止";
+                label_Status.Text = "実行中";
                 ReadUiValues();
-
+                UpdateCommandHistory(AS.Data.CurrentCommand);
+                DisableUi();
                 if (false == CheckSettings())
                 {
                     return;
@@ -57,8 +87,12 @@ namespace BlenderRenderingCommander
 
                 // 非同期メソッドを呼び出す
                 await Task.Run(() => RunCommandAsync());
-
+                EnableUi();
                 button_Rendering.Text = "レンダリング";
+                label_Status.Text = "未実行";
+                label_Progress.Text = "";
+                textBox_Log.AppendText("****" + textBoxEx_File.FileNameWithExtension + " Rendering finished. ****" + Environment.NewLine);
+                WriteUiValues();
 
             }
             else
@@ -92,12 +126,37 @@ namespace BlenderRenderingCommander
         private void WriteUiValues()
         {
             EventEnable = false;
+            {
+                textBoxEx_Exe.Text = AS.Data.CurrentCommand.BlenerExePath;
+                textBoxEx_File.Text = AS.Data.CurrentCommand.BlenerFilePath;
+                numericUpDown_End.Value = AS.Data.CurrentCommand.EndFrame;
+                numericUpDown_Start.Value = AS.Data.CurrentCommand.StartFrame;
+                textBoxEx_Scene.Text = AS.Data.CurrentCommand.Scene;
 
-            textBoxEx_Exe.Text = AS.Data.CurrentCommand.BlenerExePath;
-            textBoxEx_File.Text = AS.Data.CurrentCommand.BlenerFilePath;
-            numericUpDown_End.Value = AS.Data.CurrentCommand.EndFrame;
-            numericUpDown_Start.Value = AS.Data.CurrentCommand.StartFrame;
-            textBoxEx_Scene.Text = AS.Data.CurrentCommand.Scene;
+
+                listView_History.Items.Clear();
+
+                foreach (var cmd in AS.Data.CommandHistory.ToArray().Reverse())
+                {
+                    ListViewItem lvi = new ListViewItem();
+                    lvi.Text = Path.GetFileName(cmd.BlenerFilePath);
+                    lvi.SubItems.Add(cmd.Scene);
+                    lvi.SubItems.Add(cmd.StartFrame.ToString());
+                    lvi.SubItems.Add(cmd.EndFrame.ToString());
+                    lvi.SubItems.Add(cmd.BlenerFilePath);
+                    lvi.SubItems.Add(cmd.BlenerExePath);
+
+                    listView_History.Items.Add(lvi);
+
+                }
+
+                foreach (ColumnHeader ch in listView_History.Columns)
+                {
+                    ch.Width = -2;
+                }
+
+                listView_History.SelectedIndices.Clear();
+            }
 
             EventEnable = true;
         }
@@ -144,6 +203,12 @@ namespace BlenderRenderingCommander
                 // テキストボックスに追加する
                 textBox_Log.Invoke((Action)(() => textBox_Log.AppendText(line + Environment.NewLine)));
 
+                //フレーム表示更新
+                if (line.IndexOf("Append frame ") > -1)
+                {
+                    var str = line.Replace("Append ", "");
+                    label_Progress.Invoke((Action)(() => label_Progress.Text = str));
+                }
 
                 if (InterruptionFlag == true)
                 {
@@ -306,9 +371,26 @@ namespace BlenderRenderingCommander
         private void button1_Click(object sender, EventArgs e)
         {
             InterruptionFlag = true;
+        }
 
-            // キャンセルの要求を送る
-            //Cts.Cancel();
+        private void listView_History_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (EventEnable == false) { return; }
+            EventEnable = false;
+            {
+                if (listView_History.SelectedItems.Count > 0) {
+
+                    textBoxEx_Exe.Text = listView_History.SelectedItems[0].SubItems[5].Text;
+                    textBoxEx_File.Text = listView_History.SelectedItems[0].SubItems[4].Text;
+                    numericUpDown_End.Value = decimal.Parse(listView_History.SelectedItems[0].SubItems[3].Text);
+                    numericUpDown_Start.Value = decimal.Parse(listView_History.SelectedItems[0].SubItems[2].Text);
+                    textBoxEx_Scene.Text = listView_History.SelectedItems[0].SubItems[1].Text;
+
+                    ReadUiValues();
+
+                }
+            }
+            EventEnable = true;
         }
     }
 }

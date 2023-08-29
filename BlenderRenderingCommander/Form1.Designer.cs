@@ -54,13 +54,14 @@
             label_Status = new Label();
             button_Clear = new Button();
             timer_ValueChanged = new System.Windows.Forms.Timer(components);
+            label_Progress = new Label();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_Start).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_End).BeginInit();
             SuspendLayout();
             // 
             // button_Rendering
             // 
-            button_Rendering.Location = new Point(544, 82);
+            button_Rendering.Location = new Point(515, 55);
             button_Rendering.Name = "button_Rendering";
             button_Rendering.Size = new Size(104, 23);
             button_Rendering.TabIndex = 0;
@@ -73,7 +74,7 @@
             textBoxEx_Exe.AllowDrop = true;
             textBoxEx_Exe.Location = new Point(100, 12);
             textBoxEx_Exe.Name = "textBoxEx_Exe";
-            textBoxEx_Exe.Size = new Size(438, 23);
+            textBoxEx_Exe.Size = new Size(519, 23);
             textBoxEx_Exe.TabIndex = 1;
             textBoxEx_Exe.TextChanged += textBoxEx_Exe_TextChanged;
             // 
@@ -91,20 +92,23 @@
             textBoxEx_File.AllowDrop = true;
             textBoxEx_File.Location = new Point(100, 83);
             textBoxEx_File.Name = "textBoxEx_File";
-            textBoxEx_File.Size = new Size(438, 23);
+            textBoxEx_File.Size = new Size(519, 23);
             textBoxEx_File.TabIndex = 3;
             textBoxEx_File.TextChanged += textBoxEx_File_TextChanged;
             // 
             // listView_History
             // 
             listView_History.Columns.AddRange(new ColumnHeader[] { columnHeader_File, columnHeader_Scene, columnHeader_StartFrame, columnHeader_EndFrame, columnHeader_Path, columnHeader_Exe });
+            listView_History.FullRowSelect = true;
             listView_History.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             listView_History.Location = new Point(29, 224);
+            listView_History.MultiSelect = false;
             listView_History.Name = "listView_History";
             listView_History.Size = new Size(590, 206);
             listView_History.TabIndex = 4;
             listView_History.UseCompatibleStateImageBehavior = false;
             listView_History.View = View.Details;
+            listView_History.SelectedIndexChanged += listView_History_SelectedIndexChanged;
             // 
             // columnHeader_File
             // 
@@ -259,11 +263,20 @@
             // 
             timer_ValueChanged.Tick += timer_ValueChanged_Tick;
             // 
+            // label_Progress
+            // 
+            label_Progress.AutoSize = true;
+            label_Progress.Location = new Point(158, 59);
+            label_Progress.Name = "label_Progress";
+            label_Progress.Size = new Size(0, 15);
+            label_Progress.TabIndex = 19;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 704);
+            Controls.Add(label_Progress);
             Controls.Add(button_Clear);
             Controls.Add(label_Status);
             Controls.Add(label_StatusLabel);
@@ -318,5 +331,6 @@
         private Label label_Status;
         private Button button_Clear;
         private System.Windows.Forms.Timer timer_ValueChanged;
+        private Label label_Progress;
     }
 }
