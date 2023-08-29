@@ -378,7 +378,8 @@ namespace BlenderRenderingCommander
             if (EventEnable == false) { return; }
             EventEnable = false;
             {
-                if (listView_History.SelectedItems.Count > 0) {
+                if (listView_History.SelectedItems.Count > 0)
+                {
 
                     textBoxEx_Exe.Text = listView_History.SelectedItems[0].SubItems[5].Text;
                     textBoxEx_File.Text = listView_History.SelectedItems[0].SubItems[4].Text;

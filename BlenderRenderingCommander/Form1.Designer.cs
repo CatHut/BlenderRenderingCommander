@@ -61,7 +61,7 @@
             // 
             // button_Rendering
             // 
-            button_Rendering.Location = new Point(515, 55);
+            button_Rendering.Location = new Point(83, 59);
             button_Rendering.Name = "button_Rendering";
             button_Rendering.Size = new Size(104, 23);
             button_Rendering.TabIndex = 0;
@@ -72,16 +72,16 @@
             // textBoxEx_Exe
             // 
             textBoxEx_Exe.AllowDrop = true;
-            textBoxEx_Exe.Location = new Point(100, 12);
+            textBoxEx_Exe.Location = new Point(83, 8);
             textBoxEx_Exe.Name = "textBoxEx_Exe";
-            textBoxEx_Exe.Size = new Size(519, 23);
+            textBoxEx_Exe.Size = new Size(689, 23);
             textBoxEx_Exe.TabIndex = 1;
             textBoxEx_Exe.TextChanged += textBoxEx_Exe_TextChanged;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(29, 15);
+            label1.Location = new Point(12, 11);
             label1.Name = "label1";
             label1.Size = new Size(65, 15);
             label1.TabIndex = 2;
@@ -90,9 +90,9 @@
             // textBoxEx_File
             // 
             textBoxEx_File.AllowDrop = true;
-            textBoxEx_File.Location = new Point(100, 83);
+            textBoxEx_File.Location = new Point(83, 111);
             textBoxEx_File.Name = "textBoxEx_File";
-            textBoxEx_File.Size = new Size(519, 23);
+            textBoxEx_File.Size = new Size(689, 23);
             textBoxEx_File.TabIndex = 3;
             textBoxEx_File.TextChanged += textBoxEx_File_TextChanged;
             // 
@@ -101,10 +101,10 @@
             listView_History.Columns.AddRange(new ColumnHeader[] { columnHeader_File, columnHeader_Scene, columnHeader_StartFrame, columnHeader_EndFrame, columnHeader_Path, columnHeader_Exe });
             listView_History.FullRowSelect = true;
             listView_History.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            listView_History.Location = new Point(29, 224);
+            listView_History.Location = new Point(12, 262);
             listView_History.MultiSelect = false;
             listView_History.Name = "listView_History";
-            listView_History.Size = new Size(590, 206);
+            listView_History.Size = new Size(760, 206);
             listView_History.TabIndex = 4;
             listView_History.UseCompatibleStateImageBehavior = false;
             listView_History.View = View.Details;
@@ -137,7 +137,7 @@
             // label_File
             // 
             label_File.AutoSize = true;
-            label_File.Location = new Point(69, 86);
+            label_File.Location = new Point(52, 114);
             label_File.Name = "label_File";
             label_File.Size = new Size(25, 15);
             label_File.TabIndex = 5;
@@ -146,7 +146,7 @@
             // 
             // numericUpDown_Start
             // 
-            numericUpDown_Start.Location = new Point(100, 141);
+            numericUpDown_Start.Location = new Point(83, 169);
             numericUpDown_Start.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             numericUpDown_Start.Name = "numericUpDown_Start";
             numericUpDown_Start.Size = new Size(96, 23);
@@ -155,7 +155,7 @@
             // 
             // numericUpDown_End
             // 
-            numericUpDown_End.Location = new Point(100, 170);
+            numericUpDown_End.Location = new Point(83, 198);
             numericUpDown_End.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             numericUpDown_End.Name = "numericUpDown_End";
             numericUpDown_End.Size = new Size(96, 23);
@@ -165,7 +165,7 @@
             // textBoxEx_Scene
             // 
             textBoxEx_Scene.AllowDrop = true;
-            textBoxEx_Scene.Location = new Point(100, 112);
+            textBoxEx_Scene.Location = new Point(83, 140);
             textBoxEx_Scene.Name = "textBoxEx_Scene";
             textBoxEx_Scene.Size = new Size(152, 23);
             textBoxEx_Scene.TabIndex = 9;
@@ -174,7 +174,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(56, 115);
+            label3.Location = new Point(39, 143);
             label3.Name = "label3";
             label3.Size = new Size(38, 15);
             label3.TabIndex = 10;
@@ -184,7 +184,7 @@
             // label_StartFrame
             // 
             label_StartFrame.AutoSize = true;
-            label_StartFrame.Location = new Point(29, 145);
+            label_StartFrame.Location = new Point(12, 173);
             label_StartFrame.Name = "label_StartFrame";
             label_StartFrame.Size = new Size(65, 15);
             label_StartFrame.TabIndex = 11;
@@ -194,7 +194,7 @@
             // label_EndFrame
             // 
             label_EndFrame.AutoSize = true;
-            label_EndFrame.Location = new Point(33, 172);
+            label_EndFrame.Location = new Point(16, 200);
             label_EndFrame.Name = "label_EndFrame";
             label_EndFrame.Size = new Size(61, 15);
             label_EndFrame.TabIndex = 12;
@@ -203,18 +203,18 @@
             // 
             // textBox_Log
             // 
-            textBox_Log.Location = new Point(29, 476);
+            textBox_Log.Location = new Point(12, 498);
             textBox_Log.Multiline = true;
             textBox_Log.Name = "textBox_Log";
             textBox_Log.ReadOnly = true;
             textBox_Log.ScrollBars = ScrollBars.Both;
-            textBox_Log.Size = new Size(590, 171);
+            textBox_Log.Size = new Size(760, 171);
             textBox_Log.TabIndex = 13;
             // 
             // label_History
             // 
             label_History.AutoSize = true;
-            label_History.Location = new Point(29, 206);
+            label_History.Location = new Point(12, 244);
             label_History.Name = "label_History";
             label_History.Size = new Size(31, 15);
             label_History.TabIndex = 14;
@@ -224,7 +224,7 @@
             // label_Log
             // 
             label_Log.AutoSize = true;
-            label_Log.Location = new Point(29, 458);
+            label_Log.Location = new Point(12, 480);
             label_Log.Name = "label_Log";
             label_Log.Size = new Size(25, 15);
             label_Log.TabIndex = 15;
@@ -233,7 +233,7 @@
             // label_StatusLabel
             // 
             label_StatusLabel.AutoSize = true;
-            label_StatusLabel.Location = new Point(43, 59);
+            label_StatusLabel.Location = new Point(26, 93);
             label_StatusLabel.Name = "label_StatusLabel";
             label_StatusLabel.Size = new Size(51, 15);
             label_StatusLabel.TabIndex = 16;
@@ -243,7 +243,7 @@
             // label_Status
             // 
             label_Status.AutoSize = true;
-            label_Status.Location = new Point(100, 59);
+            label_Status.Location = new Point(83, 93);
             label_Status.Name = "label_Status";
             label_Status.Size = new Size(43, 15);
             label_Status.TabIndex = 17;
@@ -251,7 +251,7 @@
             // 
             // button_Clear
             // 
-            button_Clear.Location = new Point(202, 141);
+            button_Clear.Location = new Point(185, 169);
             button_Clear.Name = "button_Clear";
             button_Clear.Size = new Size(50, 23);
             button_Clear.TabIndex = 18;
@@ -275,7 +275,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 704);
+            ClientSize = new Size(784, 681);
             Controls.Add(label_Progress);
             Controls.Add(button_Clear);
             Controls.Add(label_Status);
