@@ -9,6 +9,7 @@ namespace BlenderRenderingCommander
         AppSetting<BrcData> AS;
         bool EventEnable = true;
         bool InterruptionFlag = false;
+        bool IsProcessing = false;
 
         // キャンセル トークン ソースを作成
         CancellationTokenSource Cts;
@@ -43,15 +44,27 @@ namespace BlenderRenderingCommander
 
         private async void button_Rendering_Click(object sender, EventArgs e)
         {
-            ReadUiValues();
-
-            if (false == CheckSettings())
+            if (IsProcessing == false)
             {
-                return;
-            }
+                IsProcessing = true;
+                button_Rendering.Text = "レンダリング中止";
+                ReadUiValues();
 
-            // 非同期メソッドを呼び出す
-            await Task.Run(() => RunCommandAsync());
+                if (false == CheckSettings())
+                {
+                    return;
+                }
+
+                // 非同期メソッドを呼び出す
+                await Task.Run(() => RunCommandAsync());
+
+                button_Rendering.Text = "レンダリング";
+
+            }
+            else
+            {
+                InterruptionFlag = true;
+            }
 
         }
 
@@ -101,34 +114,29 @@ namespace BlenderRenderingCommander
             p.StartInfo.FileName = exePath;
 
             // コマンドライン引数を指定
-            p.StartInfo.Arguments = CreateCommandText(AS.Data.CurrentCommand);
+            p.StartInfo.Arguments = CreateOptionText(AS.Data.CurrentCommand);
 
             // 出力を読み取れるようにする
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.RedirectStandardInput = true;
-            p.StartInfo.StandardInputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
+            //p.StartInfo.RedirectStandardInput = true;
+            //p.StartInfo.StandardInputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
             p.StartInfo.StandardOutputEncoding = Encoding.UTF8; // 日本語に対応したエンコーディングを指定
 
             // ウィンドウを表示しないようにする
             p.StartInfo.CreateNoWindow = true;
 
-            //// プロセス終了時のイベントハンドラーを登録
-            //var tcs = new TaskCompletionSource<bool>();
-            //p.EnableRaisingEvents = true;
-            //p.Exited += (sender, e) => tcs.SetResult(true);
-
-            Debug.WriteLine("A");
+            //Debug.WriteLine("A");
 
             // プロセスを起動
             p.Start();
 
-            Debug.WriteLine("B");
+            //Debug.WriteLine("B");
 
             // 出力を読み取る
             while (!p.StandardOutput.EndOfStream)
             {
-                Debug.WriteLine("C");
+                //Debug.WriteLine("C");
 
                 // 一行ずつ読み取る
                 string line = await p.StandardOutput.ReadLineAsync();
@@ -137,39 +145,39 @@ namespace BlenderRenderingCommander
                 textBox_Log.Invoke((Action)(() => textBox_Log.AppendText(line + Environment.NewLine)));
 
 
-                // キャンセルが要求されたかどうかチェックする
-                //Ct.ThrowIfCancellationRequested();
-
                 if (InterruptionFlag == true)
                 {
-                    Debug.WriteLine("G");
+                    // テキストボックスに追加する
+                    textBox_Log.Invoke((Action)(() => textBox_Log.AppendText("強制終了します" + Environment.NewLine)));
+
+                    //Debug.WriteLine("G");
                     // Ctrl+Cのシグナルを送る
-                    p.StandardInput.WriteLine("\x3");
-                    //p.Close();
-                    Debug.WriteLine("H");
-                    //p.Kill();
+                    //p.StandardInput.WriteLine("\x3");
+                    //Debug.WriteLine("H");
+                    p.Kill();
                     InterruptionFlag = false;
                 }
 
             }
 
-            // プロセス終了時のイベントを非同期的に待機
-            //await tcs.Task;
 
-            Debug.WriteLine("D");
+            //Debug.WriteLine("D");
 
             await p.WaitForExitAsync();
 
-            Debug.WriteLine("E");
+            //Debug.WriteLine("E");
 
             // プロセスを閉じる
             p.Close();
 
-            Debug.WriteLine("F");
+            //Debug.WriteLine("F");
+            IsProcessing = false;
+            button_Rendering.Invoke((Action)(() => button_Rendering.Text = "レンダリング"));
+
 
         }
 
-        private string CreateCommandText(RenderingCommand rc)
+        private string CreateOptionText(RenderingCommand rc)
         {
             //blender -b test.blend -S 動画編集 -a --verbose 0 -s 10 -e 20
 
