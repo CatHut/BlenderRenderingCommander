@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>ico\BlenderRenderingCommander_logo_ico.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,10 @@
     <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\Common\SerializableKeyValuePair.cs" Link="CatHutLib\SerializableKeyValuePair.cs" />
     <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\Common\SerializableSortedDictionary.cs" Link="CatHutLib\SerializableSortedDictionary.cs" />
     <Compile Include="..\..\CatHutLib\CatHutLib\CatHutLib\ExControls\TextBoxEx.cs" Link="CatHutLib\TextBoxEx.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ico\BlenderRenderingCommander_logo_ico.ico" />
   </ItemGroup>
 
   <ItemGroup>

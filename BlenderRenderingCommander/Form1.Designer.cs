@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             button_Rendering = new Button();
             textBoxEx_Exe = new CatHut.TextBoxEx();
             label1 = new Label();
@@ -295,6 +296,7 @@
             Controls.Add(label1);
             Controls.Add(textBoxEx_Exe);
             Controls.Add(button_Rendering);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "Blender Rendering Commander";
             FormClosed += Form1_FormClosed;
