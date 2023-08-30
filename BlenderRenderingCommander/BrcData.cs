@@ -15,6 +15,7 @@ namespace BlenderRenderingCommander
         public string Scene { get; set; }
         public int StartFrame { get; set; }
         public int EndFrame { get; set; }
+        public string OutputFolder { get; set; }
 
         public RenderingCommand() 
         {
@@ -23,6 +24,7 @@ namespace BlenderRenderingCommander
             Scene = "";
             StartFrame = 0;
             EndFrame = 0;
+            OutputFolder = "";
         }
 
 
@@ -55,6 +57,11 @@ namespace BlenderRenderingCommander
             }
 
             if (EndFrame != rc.EndFrame)
+            {
+                return false;
+            }
+
+            if (OutputFolder != rc.OutputFolder)
             {
                 return false;
             }

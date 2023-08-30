@@ -41,6 +41,7 @@
             columnHeader_EndFrame = new ColumnHeader();
             columnHeader_Path = new ColumnHeader();
             columnHeader_Exe = new ColumnHeader();
+            columnHeader_OutputFolder = new ColumnHeader();
             label_File = new Label();
             numericUpDown_Start = new NumericUpDown();
             numericUpDown_End = new NumericUpDown();
@@ -56,6 +57,8 @@
             button_Clear = new Button();
             timer_ValueChanged = new System.Windows.Forms.Timer(components);
             label_Progress = new Label();
+            label_OutputFolder = new Label();
+            textBoxEx_OutputFolder = new CatHut.TextBoxEx();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_Start).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_End).BeginInit();
             SuspendLayout();
@@ -99,10 +102,10 @@
             // 
             // listView_History
             // 
-            listView_History.Columns.AddRange(new ColumnHeader[] { columnHeader_File, columnHeader_Scene, columnHeader_StartFrame, columnHeader_EndFrame, columnHeader_Path, columnHeader_Exe });
+            listView_History.Columns.AddRange(new ColumnHeader[] { columnHeader_File, columnHeader_Scene, columnHeader_StartFrame, columnHeader_EndFrame, columnHeader_Path, columnHeader_Exe, columnHeader_OutputFolder });
             listView_History.FullRowSelect = true;
             listView_History.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            listView_History.Location = new Point(12, 262);
+            listView_History.Location = new Point(12, 281);
             listView_History.MultiSelect = false;
             listView_History.Name = "listView_History";
             listView_History.Size = new Size(760, 206);
@@ -129,11 +132,18 @@
             // 
             // columnHeader_Path
             // 
+            columnHeader_Path.DisplayIndex = 5;
             columnHeader_Path.Text = "Path";
             // 
             // columnHeader_Exe
             // 
+            columnHeader_Exe.DisplayIndex = 6;
             columnHeader_Exe.Text = "Exe";
+            // 
+            // columnHeader_OutputFolder
+            // 
+            columnHeader_OutputFolder.DisplayIndex = 4;
+            columnHeader_OutputFolder.Text = "OutputFolder";
             // 
             // label_File
             // 
@@ -204,7 +214,7 @@
             // 
             // textBox_Log
             // 
-            textBox_Log.Location = new Point(12, 498);
+            textBox_Log.Location = new Point(12, 519);
             textBox_Log.Multiline = true;
             textBox_Log.Name = "textBox_Log";
             textBox_Log.ReadOnly = true;
@@ -215,7 +225,7 @@
             // label_History
             // 
             label_History.AutoSize = true;
-            label_History.Location = new Point(12, 244);
+            label_History.Location = new Point(12, 263);
             label_History.Name = "label_History";
             label_History.Size = new Size(31, 15);
             label_History.TabIndex = 14;
@@ -225,7 +235,7 @@
             // label_Log
             // 
             label_Log.AutoSize = true;
-            label_Log.Location = new Point(12, 480);
+            label_Log.Location = new Point(12, 501);
             label_Log.Name = "label_Log";
             label_Log.Size = new Size(25, 15);
             label_Log.TabIndex = 15;
@@ -272,11 +282,31 @@
             label_Progress.Size = new Size(0, 15);
             label_Progress.TabIndex = 19;
             // 
+            // label_OutputFolder
+            // 
+            label_OutputFolder.AutoSize = true;
+            label_OutputFolder.Location = new Point(-1, 230);
+            label_OutputFolder.Name = "label_OutputFolder";
+            label_OutputFolder.Size = new Size(78, 15);
+            label_OutputFolder.TabIndex = 20;
+            label_OutputFolder.Text = "OutputFolder";
+            // 
+            // textBoxEx_OutputFolder
+            // 
+            textBoxEx_OutputFolder.AllowDrop = true;
+            textBoxEx_OutputFolder.Location = new Point(83, 227);
+            textBoxEx_OutputFolder.Name = "textBoxEx_OutputFolder";
+            textBoxEx_OutputFolder.Size = new Size(689, 23);
+            textBoxEx_OutputFolder.TabIndex = 21;
+            textBoxEx_OutputFolder.TextChanged += textBoxEx_OutputFolder_TextChanged;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(784, 681);
+            ClientSize = new Size(784, 701);
+            Controls.Add(textBoxEx_OutputFolder);
+            Controls.Add(label_OutputFolder);
             Controls.Add(label_Progress);
             Controls.Add(button_Clear);
             Controls.Add(label_Status);
@@ -334,5 +364,8 @@
         private Button button_Clear;
         private System.Windows.Forms.Timer timer_ValueChanged;
         private Label label_Progress;
+        private Label label_OutputFolder;
+        private CatHut.TextBoxEx textBoxEx_OutputFolder;
+        private ColumnHeader columnHeader_OutputFolder;
     }
 }

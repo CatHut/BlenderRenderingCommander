@@ -74,25 +74,35 @@ namespace BlenderRenderingCommander
         {
             if (IsProcessing == false)
             {
-                IsProcessing = true;
                 button_Rendering.Text = "レンダリング中止";
                 label_Status.Text = "実行中";
                 ReadUiValues();
-                UpdateCommandHistory(AS.Data.CurrentCommand);
                 DisableUi();
                 if (false == CheckSettings())
                 {
-                    return;
-                }
+                    //実行しない
+                    EnableUi();
+                    button_Rendering.Text = "レンダリング";
+                    label_Status.Text = "未実行";
+                    label_Progress.Text = "";
 
-                // 非同期メソッドを呼び出す
-                await Task.Run(() => RunCommandAsync());
-                EnableUi();
-                button_Rendering.Text = "レンダリング";
-                label_Status.Text = "未実行";
-                label_Progress.Text = "";
-                textBox_Log.AppendText("****" + textBoxEx_File.FileNameWithExtension + " Rendering finished. ****" + Environment.NewLine);
-                WriteUiValues();
+                }
+                else
+                {
+                    UpdateCommandHistory(AS.Data.CurrentCommand);
+                    IsProcessing = true;
+
+                    //実行
+                    // 非同期メソッドを呼び出す
+                    await Task.Run(() => RunCommandAsync());
+
+                    EnableUi();
+                    button_Rendering.Text = "レンダリング";
+                    label_Status.Text = "未実行";
+                    label_Progress.Text = "";
+                    textBox_Log.AppendText("****" + textBoxEx_File.FileNameWithExtension + " Rendering finished. ****" + Environment.NewLine);
+                    WriteUiValues();
+                }
 
             }
             else
@@ -109,11 +119,13 @@ namespace BlenderRenderingCommander
         {
             EventEnable = false;
             {
+
                 AS.Data.CurrentCommand.BlenerExePath = textBoxEx_Exe.Text;
                 AS.Data.CurrentCommand.BlenerFilePath = textBoxEx_File.Text;
                 AS.Data.CurrentCommand.EndFrame = (int)numericUpDown_End.Value;
                 AS.Data.CurrentCommand.StartFrame = (int)numericUpDown_Start.Value;
                 AS.Data.CurrentCommand.Scene = textBoxEx_Scene.Text;
+                AS.Data.CurrentCommand.OutputFolder = textBoxEx_OutputFolder.Text;
 
                 AS.Save();
             }
@@ -132,6 +144,7 @@ namespace BlenderRenderingCommander
                 numericUpDown_End.Value = AS.Data.CurrentCommand.EndFrame;
                 numericUpDown_Start.Value = AS.Data.CurrentCommand.StartFrame;
                 textBoxEx_Scene.Text = AS.Data.CurrentCommand.Scene;
+                textBoxEx_OutputFolder.Text = AS.Data.CurrentCommand.OutputFolder;
 
 
                 listView_History.Items.Clear();
@@ -145,6 +158,7 @@ namespace BlenderRenderingCommander
                     lvi.SubItems.Add(cmd.EndFrame.ToString());
                     lvi.SubItems.Add(cmd.BlenerFilePath);
                     lvi.SubItems.Add(cmd.BlenerExePath);
+                    lvi.SubItems.Add(cmd.OutputFolder);
 
                     listView_History.Items.Add(lvi);
 
@@ -257,6 +271,8 @@ namespace BlenderRenderingCommander
             string startFrame = rc.StartFrame.ToString();
             string optionEnd = "-e";
             string endFrame = rc.EndFrame.ToString();
+            string optionO = "-o";
+            string outputFoler = "\"" + rc.OutputFolder + "/\""; // ファイルパスの前後にダブルクォーテーションを追加
             string optionVerbose = "--verbose 0";
             string optionA = "-a";
 
@@ -273,6 +289,12 @@ namespace BlenderRenderingCommander
                 ret += optionEnd + " ";
                 ret += endFrame + " ";
             }
+            if (rc.OutputFolder != "")
+            {
+                ret += optionO + " ";
+                ret += outputFoler + " ";
+            }
+
             ret += optionVerbose + " ";
             ret += optionA;
 
@@ -315,6 +337,13 @@ namespace BlenderRenderingCommander
                 return false;
             }
 
+            if (textBoxEx_OutputFolder.Text != "" && !Directory.Exists(textBoxEx_OutputFolder.Text))
+            {
+                textBox_Log.AppendText("Output Folder doesn't exists." + Environment.NewLine);
+                return false;
+            }
+
+
             return true;
         }
 
@@ -356,6 +385,17 @@ namespace BlenderRenderingCommander
 
         private void numericUpDown_Start_ValueChanged(object sender, EventArgs e)
         {
+            if (EventEnable == false) { return; }
+            EventEnable = false;
+            {
+                if (numericUpDown_End.Value < numericUpDown_Start.Value)
+                {
+                    numericUpDown_Start.Value = numericUpDown_End.Value;
+                }
+
+            }
+            EventEnable = true;
+
             timer_ValueChanged.Stop();
             timer_ValueChanged.Start();
 
@@ -363,6 +403,17 @@ namespace BlenderRenderingCommander
 
         private void numericUpDown_End_ValueChanged(object sender, EventArgs e)
         {
+            if (EventEnable == false) { return; }
+            EventEnable = false;
+            {
+                if (numericUpDown_End.Value < numericUpDown_Start.Value)
+                {
+                    numericUpDown_End.Value = numericUpDown_Start.Value;
+                }
+
+            }
+            EventEnable = true;
+
             timer_ValueChanged.Stop();
             timer_ValueChanged.Start();
 
@@ -392,6 +443,12 @@ namespace BlenderRenderingCommander
                 }
             }
             EventEnable = true;
+        }
+
+        private void textBoxEx_OutputFolder_TextChanged(object sender, EventArgs e)
+        {
+            timer_ValueChanged.Stop();
+            timer_ValueChanged.Start();
         }
     }
 }
