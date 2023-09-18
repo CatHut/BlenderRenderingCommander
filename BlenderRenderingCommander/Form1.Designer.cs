@@ -277,7 +277,7 @@
             // label_Progress
             // 
             label_Progress.AutoSize = true;
-            label_Progress.Location = new Point(158, 59);
+            label_Progress.Location = new Point(163, 93);
             label_Progress.Name = "label_Progress";
             label_Progress.Size = new Size(0, 15);
             label_Progress.TabIndex = 19;
