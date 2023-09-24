@@ -10,6 +10,7 @@ namespace BlenderRenderingCommander
         bool EventEnable = true;
         bool InterruptionFlag = false;
         bool IsProcessing = false;
+        DateTime StartTime;
         int MAX_HISTORY_NUM = 10;
 
 
@@ -76,6 +77,9 @@ namespace BlenderRenderingCommander
             {
                 button_Rendering.Text = "レンダリング中止";
                 label_Status.Text = "実行中";
+
+                StartTime = DateTime.Now;
+                label_StartDateTime.Text = "開始日時:" + StartTime.ToString("MM/dd HH:mm:ss");
                 ReadUiValues();
                 DisableUi();
                 if (false == CheckSettings())
@@ -84,6 +88,8 @@ namespace BlenderRenderingCommander
                     EnableUi();
                     button_Rendering.Text = "レンダリング";
                     label_Status.Text = "未実行";
+                    label_StartDateTime.Text = "開始日時:MM/DD hh:mm:ss";
+                    label_EndDateTime.Text = "終了日時:MM/DD hh:mm:ss";
                     label_Progress.Text = "";
 
                 }
@@ -99,6 +105,10 @@ namespace BlenderRenderingCommander
                     EnableUi();
                     button_Rendering.Text = "レンダリング";
                     label_Status.Text = "未実行";
+                    DateTime dt = DateTime.Now;
+                    label_EndDateTime.Text = "終了日時:" + dt.ToString("MM/dd HH:mm:ss");
+                    TimeSpan ts = dt - StartTime;
+                    label_PastTime.Text = "経過時間:" + ts.ToString(@"hh\:mm\:ss");
                     label_Progress.Text = "";
                     textBox_Log.AppendText("****" + textBoxEx_File.FileNameWithExtension + " Rendering finished. ****" + Environment.NewLine);
                     WriteUiValues();
@@ -222,6 +232,11 @@ namespace BlenderRenderingCommander
                 {
                     var str = line.Replace("Append ", "");
                     label_Progress.Invoke((Action)(() => label_Progress.Text = str));
+
+                    DateTime dt = DateTime.Now;
+                    TimeSpan ts = dt - StartTime;
+                    label_PastTime.Invoke((Action)(() => label_PastTime.Text = "経過時間:" + ts.ToString(@"hh\:mm\:ss")));
+
                 }
 
                 if (InterruptionFlag == true)

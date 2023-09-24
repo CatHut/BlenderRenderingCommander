@@ -59,6 +59,9 @@
             label_Progress = new Label();
             label_OutputFolder = new Label();
             textBoxEx_OutputFolder = new CatHut.TextBoxEx();
+            label_StartDateTime = new Label();
+            label_EndDateTime = new Label();
+            label_PastTime = new Label();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_Start).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_End).BeginInit();
             SuspendLayout();
@@ -300,11 +303,41 @@
             textBoxEx_OutputFolder.TabIndex = 21;
             textBoxEx_OutputFolder.TextChanged += textBoxEx_OutputFolder_TextChanged;
             // 
+            // label_StartDateTime
+            // 
+            label_StartDateTime.AutoSize = true;
+            label_StartDateTime.Location = new Point(400, 93);
+            label_StartDateTime.Name = "label_StartDateTime";
+            label_StartDateTime.Size = new Size(171, 15);
+            label_StartDateTime.TabIndex = 22;
+            label_StartDateTime.Text = "開始日時：MM/DD HH:MM:SS";
+            // 
+            // label_EndDateTime
+            // 
+            label_EndDateTime.AutoSize = true;
+            label_EndDateTime.Location = new Point(577, 93);
+            label_EndDateTime.Name = "label_EndDateTime";
+            label_EndDateTime.Size = new Size(171, 15);
+            label_EndDateTime.TabIndex = 23;
+            label_EndDateTime.Text = "終了日時：MM/DD HH:MM:SS";
+            // 
+            // label_PastTime
+            // 
+            label_PastTime.AutoSize = true;
+            label_PastTime.Location = new Point(277, 93);
+            label_PastTime.Name = "label_PastTime";
+            label_PastTime.Size = new Size(117, 15);
+            label_PastTime.TabIndex = 24;
+            label_PastTime.Text = "経過時間：hh:mm:ss";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 701);
+            Controls.Add(label_PastTime);
+            Controls.Add(label_EndDateTime);
+            Controls.Add(label_StartDateTime);
             Controls.Add(textBoxEx_OutputFolder);
             Controls.Add(label_OutputFolder);
             Controls.Add(label_Progress);
@@ -367,5 +400,8 @@
         private Label label_OutputFolder;
         private CatHut.TextBoxEx textBoxEx_OutputFolder;
         private ColumnHeader columnHeader_OutputFolder;
+        private Label label_StartDateTime;
+        private Label label_EndDateTime;
+        private Label label_PastTime;
     }
 }
