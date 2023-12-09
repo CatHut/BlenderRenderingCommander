@@ -296,7 +296,7 @@ namespace BlenderRenderingCommander
             ret += filePath + " ";
             ret += optionS + " ";
             ret += scene + " ";
-            if (rc.StartFrame != 0 && rc.EndFrame != 0)
+            if (rc.StartFrame != 0 || rc.EndFrame != 0)
             {
                 ret += " ";
                 ret += optionStart + " ";
